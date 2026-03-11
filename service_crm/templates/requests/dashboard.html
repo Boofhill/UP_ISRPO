@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="mb-4">Панель управления</h1>
+        
+        <div class="d-flex justify-content-between mb-3">
+            <h3>Мои заявки</h3>
+            {% if request.session.user_type == 'client' %}
+                <a href="{% url 'request_create' %}" class="btn btn-primary">Создать заявку</a>
+            {% endif %}
+        </div>
+
+        <div class="row">
+            {% for req in requests %}
+                <div class="col-md-6 mb-3">
+                    <div class="card {% if req.request_status %}border-success{% else %}border-warning{% endif %}">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                Заявка #{{ req.request_id }} - {{ req.home_tech_type }} {{ req.home_tech_model }}
+                            </h5>
+                            <p class="card-text">{{ req.problem_description|truncatechars:100 }}</p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    Статус: {% if req.request_status %}✅ Выполнено{% else %}⏳ В работе{% endif %}<br>
+                                    Дата создания: {{ req.start_date|date:"d.m.Y H:i" }}
+                                </small>
+                            </p>
+                            <a href="{% url 'request_detail' req.request_id %}" class="btn btn-sm btn-info">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <p class="alert alert-info">У вас пока нет заявок</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

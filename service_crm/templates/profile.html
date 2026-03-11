@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2 class="mb-4">Профиль пользователя</h2>
+        <div class="card">
+            <div class="card-body">
+                <p><strong>ФИО:</strong> {{ user.fio }}</p>
+                <p><strong>Телефон:</strong> {{ user.phone }}</p>
+                <p><strong>Логин:</strong> {{ user.login }}</p>
+                <p><strong>Тип:</strong> {{ user.get_type_display }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
