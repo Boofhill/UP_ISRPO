@@ -27,7 +27,7 @@
                 <div class="card text-white bg-warning">
                     <div class="card-body">
                         <h5 class="card-title">В работе</h5>
-                        <p class="card-text display-6">{{ pending_requests|default:0 }}</p>
+                        <p class="card-text display-6">{{ in_progress_requests|default:0 }}</p>
                     </div>
                 </div>
             </div>
@@ -88,10 +88,18 @@
                                         <td>{{ req.home_tech_type }}</td>
                                         <td>{{ req.home_tech_model }}</td>
                                         <td>
-                                            {% if req.request_status %}
-                                                <span class="badge bg-success">Выполнено</span>
-                                            {% else %}
-                                                <span class="badge bg-warning">В работе</span>
+                                            {% if req.request_status == 'new' %}
+                                                <span class="badge bg-info">Новая</span>
+                                            {% elif req.request_status == 'pending' %}
+                                                <span class="badge bg-warning">Ожидает</span>
+                                            {% elif req.request_status == 'in_progress' %}
+                                                <span class="badge bg-primary">В процессе ремонта</span>
+                                            {% elif req.request_status == 'ready' %}
+                                                <span class="badge bg-success">Готово</span>
+                                            {% elif req.request_status == 'completed' %}
+                                                <span class="badge bg-success">Завершена</span>
+                                            {% elif req.request_status == 'cancelled' %}
+                                                <span class="badge bg-danger">Отменена</span>
                                             {% endif %}
                                         </td>
                                         <td>{{ req.start_date|date:"d.m.Y H:i" }}</td>
