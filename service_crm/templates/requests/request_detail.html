@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Заявка #{{ request.request_id }}</h4>
+                <span class="badge {% if request.request_status %}bg-success{% else %}bg-warning{% endif %} fs-6">
+                    {% if request.request_status %}✓ Выполнено{% else %}⏳ В работе{% endif %}
+                </span>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th style="width: 200px;">Тип техники:</th>
+                        <td>{{ request.home_tech_type }}</td>
+                    </tr>
+                    <tr>
+                        <th>Модель:</th>
+                        <td>{{ request.home_tech_model }}</td>
+                    </tr>
+                    <tr>
+                        <th>Описание проблемы:</th>
+                        <td>{{ request.problem_description|linebreaks }}</td>
+                    </tr>
+                    <tr>
+                        <th>Дата создания:</th>
+                        <td>{{ request.start_date|date:"d.m.Y H:i" }}</td>
+                    </tr>
+                    {% if request.completion_date %}
+                    <tr>
+                        <th>Дата завершения:</th>
+                        <td>{{ request.completion_date|date:"d.m.Y H:i" }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <th>Клиент:</th>
+                        <td>{{ request.client.user.fio }} ({{ request.client.user.phone }})</td>
+                    </tr>
+                    <tr>
+                        <th>Мастер:</th>
+                        <td>
+                            {% if request.master %}
+                                {{ request.master.user.fio }}
+                            {% else %}
+                                <span class="text-muted">Не назначен</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if request.repair_parts %}
+                    <tr>
+                        <th>Использованные запчасти:</th>
+                        <td>{{ request.repair_parts|linebreaks }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+            <div class="card-footer">
+                <div class="btn-group">
+                    <a href="{% url 'request_list' %}" class="btn btn-secondary">← Назад</a>
+
+                    {% if request.session.user_type == 'admin' %}
+                        <a href="{% url 'request_update' request.request_id %}" class="btn btn-warning">Редактировать</a>
+                        <a href="{% url 'request_delete' request.request_id %}" class="btn btn-danger">Удалить</a>
+                    {% endif %}
+
+                    {% if is_assigned and not request.request_status %}
+                        <a href="{% url 'request_update' request.request_id %}" class="btn btn-success">Отметить как выполненное</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Комментарии -->
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Комментарии</h5>
+            </div>
+            <div class="card-body">
+                {% if request.session.user_type == 'master' and is_assigned %}
+                <form method="post" action="{% url 'add_comment' request.request_id %}" class="mb-4">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Добавить комментарий:</label>
+                        <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </form>
+                {% endif %}
+
+                <div class="comments-list">
+                    {% for comment in comments %}
+                    <div class="card mb-2 {% if forloop.first %}border-primary{% endif %}">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                {{ comment.master.user.fio }} - {{ comment.created_at|date:"d.m.Y H:i" }}
+                            </h6>
+                            <p class="card-text">{{ comment.message|linebreaks }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted text-center">Нет комментариев</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Боковая панель для админа -->
+    {% if request.session.user_type == 'admin' %}
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">Управление заявкой</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'assign_master' request.request_id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="master" class="form-label">Назначить мастера:</label>
+                        <select class="form-control" id="master" name="master">
+                            <option value="">-- Не назначен --</option>
+                            {% for master in masters %}
+                            <option value="{{ master.master_id }}" {% if request.master and request.master.master_id == master.master_id %}selected{% endif %}>
+                                {{ master.user.fio }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

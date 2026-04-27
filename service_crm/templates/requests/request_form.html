@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header {% if action == 'create' %}bg-success{% else %}bg-warning{% endif %} text-white">
+                <h4 class="mb-0">
+                    {% if action == 'create' %}
+                        ➕ Создание новой заявки
+                    {% elif action == 'update' %}
+                        ✏ Редактирование заявки #{{ request.request_id }}
+                    {% elif action == 'update_master' %}
+                        ✓ Изменение статуса заявки #{{ request.request_id }}
+                    {% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if action == 'create' or action == 'update' %}
+                        <!-- Полная форма для создания или редактирования админом -->
+                        <div class="mb-3">
+                            <label for="home_tech_type" class="form-label">Тип техники</label>
+                            <input type="text" class="form-control" id="home_tech_type" name="home_tech_type" 
+                                   value="{% if request %}{{ request.home_tech_type }}{% endif %}" 
+                                   placeholder="Например: Холодильник" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="home_tech_model" class="form-label">Модель техники</label>
+                            <input type="text" class="form-control" id="home_tech_model" name="home_tech_model" 
+                                   value="{% if request %}{{ request.home_tech_model }}{% endif %}" 
+                                   placeholder="Например: Samsung RB-30" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="problem_description" class="form-label">Описание проблемы</label>
+                            <textarea class="form-control" id="problem_description" name="problem_description" 
+                                      rows="5" required>{% if request %}{{ request.problem_description }}{% endif %}</textarea>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Общие поля для всех форм -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="request_status" id="status" 
+                                   {% if request and request.request_status %}checked{% endif %}>
+                            <label class="form-check-label" for="status">
+                                Отметить как выполненное
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="repair_parts" class="form-label">Использованные запчасти</label>
+                        <textarea class="form-control" id="repair_parts" name="repair_parts" 
+                                  rows="3">{% if request %}{{ request.repair_parts }}{% endif %}</textarea>
+                    </div>
+                    
+                    {% if action == 'update' and masters %}
+                    <div class="mb-3">
+                        <label for="master" class="form-label">Назначить мастера</label>
+                        <select class="form-control" id="master" name="master">
+                            <option value="">-- Не назначен --</option>
+                            {% for master in masters %}
+                            <option value="{{ master.master_id }}" {% if request.master and request.master.master_id == master.master_id %}selected{% endif %}>
+                                {{ master.user.fio }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+                    
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <a href="{% if request %}{% url 'request_detail' request.request_id %}{% else %}{% url 'dashboard' %}{% endif %}" 
+                       class="btn btn-secondary">Отмена</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

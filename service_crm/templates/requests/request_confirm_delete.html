@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">⚠ Подтверждение удаления</h4>
+            </div>
+            <div class="card-body">
+                <p class="lead">Вы уверены, что хотите удалить заявку?</p>
+
+                <div class="alert alert-warning">
+                    <strong>Заявка #{{ request.request_id }}</strong><br>
+                    {{ request.home_tech_type }} {{ request.home_tech_model }}<br>
+                    <small class="text-muted">{{ request.problem_description|truncatechars:100 }}</small>
+                </div>
+
+                <p class="text-danger"><strong>Внимание!</strong> Это действие нельзя отменить. Все комментарии к заявке также будут удалены.</p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger">Да, удалить заявку</button>
+                        <a href="{% url 'request_detail' request.request_id %}" class="btn btn-secondary">Нет, вернуться</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

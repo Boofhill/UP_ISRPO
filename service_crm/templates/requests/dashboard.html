@@ -5,37 +5,118 @@
     <div class="col-md-12">
         <h1 class="mb-4">Панель управления</h1>
         
-        <div class="d-flex justify-content-between mb-3">
-            <h3>Мои заявки</h3>
-            {% if request.session.user_type == 'client' %}
-                <a href="{% url 'request_create' %}" class="btn btn-primary">Создать заявку</a>
+        <!-- Статистика -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Всего заявок</h5>
+                        <p class="card-text display-6">{{ total_requests|default:0 }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">Выполнено</h5>
+                        <p class="card-text display-6">{{ completed_requests|default:0 }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">В работе</h5>
+                        <p class="card-text display-6">{{ pending_requests|default:0 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% if request.session.user_type == 'admin' %}
+            <div class="col-md-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title">Клиентов</h5>
+                        <p class="card-text display-6">{{ total_clients|default:0 }}</p>
+                    </div>
+                </div>
+            </div>
             {% endif %}
         </div>
 
+        <!-- Быстрые действия -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Быстрые действия</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if request.session.user_type == 'client' %}
+                            <a href="{% url 'request_create' %}" class="btn btn-primary">Создать новую заявку</a>
+                        {% endif %}
+                        <a href="{% url 'request_list' %}" class="btn btn-info">Просмотреть все заявки</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Последние заявки -->
         <div class="row">
-            {% for req in requests %}
-                <div class="col-md-6 mb-3">
-                    <div class="card {% if req.request_status %}border-success{% else %}border-warning{% endif %}">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                Заявка #{{ req.request_id }} - {{ req.home_tech_type }} {{ req.home_tech_model }}
-                            </h5>
-                            <p class="card-text">{{ req.problem_description|truncatechars:100 }}</p>
-                            <p class="card-text">
-                                <small class="text-muted">
-                                    Статус: {% if req.request_status %}✅ Выполнено{% else %}⏳ В работе{% endif %}<br>
-                                    Дата создания: {{ req.start_date|date:"d.m.Y H:i" }}
-                                </small>
-                            </p>
-                            <a href="{% url 'request_detail' req.request_id %}" class="btn btn-sm btn-info">Подробнее</a>
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Последние заявки</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>№</th>
+                                        <th>Тип техники</th>
+                                        <th>Модель</th>
+                                        <th>Статус</th>
+                                        <th>Дата создания</th>
+                                        <th>Мастер</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for req in requests %}
+                                    <tr>
+                                        <td>#{{ req.request_id }}</td>
+                                        <td>{{ req.home_tech_type }}</td>
+                                        <td>{{ req.home_tech_model }}</td>
+                                        <td>
+                                            {% if req.request_status %}
+                                                <span class="badge bg-success">Выполнено</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">В работе</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ req.start_date|date:"d.m.Y H:i" }}</td>
+                                        <td>
+                                            {% if req.master %}
+                                                {{ req.master.user.fio }}
+                                            {% else %}
+                                                <span class="text-muted">Не назначен</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'request_detail' req.request_id %}" class="btn btn-sm btn-info">Подробнее</a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">Нет заявок</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-            {% empty %}
-                <div class="col-12">
-                    <p class="alert alert-info">У вас пока нет заявок</p>
-                </div>
-            {% endfor %}
+            </div>
         </div>
     </div>
 </div>

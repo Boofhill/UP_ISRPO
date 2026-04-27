@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="mb-4">📊 Статистика системы</h1>
+
+<!-- Основные показатели -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Всего заявок</h5>
+                <p class="card-text display-4">{{ total_requests }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Выполнено</h5>
+                <p class="card-text display-4">{{ completed_requests }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">В работе</h5>
+                <p class="card-text display-4">{{ pending_requests }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Процент выполнения</h5>
+                <p class="card-text display-4">{{ completion_rate|floatformat:1 }}%</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Статистика по мастерам -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Статистика по мастерам</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Мастер</th>
+                                <th>Всего заявок</th>
+                                <th>Выполнено</th>
+                                <th>В работе</th>
+                                <th>Процент выполнения</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in masters_stats %}
+                            <tr>
+                                <td>{{ stat.master.user.fio }}</td>
+                                <td>{{ stat.total }}</td>
+                                <td class="text-success">{{ stat.completed }}</td>
+                                <td class="text-warning">{{ stat.pending }}</td>
+                                <td>
+                                    {% if stat.total > 0 %}
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" style="width: {{ stat.completed|floatformat:0 }}%">
+                                                {{ stat.completed|floatformat:0 }}%
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted">Нет заявок</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">Нет мастеров</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Общая информация -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Информация о системе</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th>Всего клиентов:</th>
+                        <td>{{ clients_count }}</td>
+                    </tr>
+                    <tr>
+                        <th>Всего мастеров:</th>
+                        <td>{{ masters_stats|length }}</td>
+                    </tr>
+                    <tr>
+                        <th>Среднее время выполнения:</th>
+                        <td>-</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

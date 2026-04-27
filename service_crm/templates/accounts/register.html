@@ -3,35 +3,44 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <h2 class="mb-4">Регистрация</h2>
-        <form method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="fio" class="form-label">ФИО</label>
-                <input type="text" class="form-control" id="fio" name="fio" required>
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Регистрация</h4>
             </div>
-            <div class="mb-3">
-                <label for="phone" class="form-label">Телефон</label>
-                <input type="text" class="form-control" id="phone" name="phone" required>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="fio" class="form-label">ФИО</label>
+                        <input type="text" class="form-control" id="fio" name="fio" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Телефон</label>
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="+7 (XXX) XXX-XX-XX" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="login" class="form-label">Логин</label>
+                        <input type="text" class="form-control" id="login" name="login" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Пароль</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Тип пользователя</label>
+                        <select class="form-control" id="type" name="type">
+                            <option value="client">Клиент</option>
+                            <option value="master">Мастер</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Зарегистрироваться</button>
+                </form>
+                <hr>
+                <p class="text-center mb-0">
+                    Уже есть аккаунт? <a href="{% url 'login' %}">Войдите</a>
+                </p>
             </div>
-            <div class="mb-3">
-                <label for="login" class="form-label">Логин</label>
-                <input type="text" class="form-control" id="login" name="login" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Пароль</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <div class="mb-3">
-                <label for="type" class="form-label">Тип пользователя</label>
-                <select class="form-control" id="type" name="type">
-                    <option value="client">Клиент</option>
-                    <option value="master">Мастер</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-            <a href="{% url 'login' %}" class="btn btn-link">Уже есть аккаунт</a>
-        </form>
+        </div>
     </div>
 </div>
 {% endblock %}

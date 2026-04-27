@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Профиль пользователя</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th style="width: 200px;">ФИО:</th>
+                        <td>{{ user.fio }}</td>
+                    </tr>
+                    <tr>
+                        <th>Телефон:</th>
+                        <td>{{ user.phone }}</td>
+                    </tr>
+                    <tr>
+                        <th>Логин:</th>
+                        <td>{{ user.login }}</td>
+                    </tr>
+                    <tr>
+                        <th>Тип пользователя:</th>
+                        <td>
+                            <span class="badge {% if user.type == 'admin' %}bg-danger{% elif user.type == 'master' %}bg-success{% else %}bg-primary{% endif %}">
+                                {{ user.get_type_display }}
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary">На главную</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
