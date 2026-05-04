@@ -1,117 +1,166 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1 class="mb-4">📊 Статистика системы</h1>
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px;">
+    <h1 style="font-size: 1.75rem; font-weight: 700; margin: 0;">Статистика системы</h1>
+    <span style="font-size: 0.85rem; color: var(--text-muted); background: #f8fafc; padding: 6px 14px; border-radius: 20px; font-weight: 500;">
+        Обновлено: сейчас
+    </span>
+</div>
 
 <!-- Основные показатели -->
 <div class="row mb-4">
     <div class="col-md-3">
-        <div class="card text-white bg-primary">
-            <div class="card-body">
-                <h5 class="card-title">Всего заявок</h5>
-                <p class="card-text display-4">{{ total_requests }}</p>
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); height: 100%;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                <div style="width: 44px; height: 44px; background: #eff6ff; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z"/></svg>
+                </div>
+                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">Всего заявок</span>
             </div>
+            <p style="font-size: 2rem; font-weight: 700; margin: 0; color: var(--text);">{{ total_requests }}</p>
         </div>
     </div>
+
     <div class="col-md-3">
-        <div class="card text-white bg-success">
-            <div class="card-body">
-                <h5 class="card-title">Выполнено</h5>
-                <p class="card-text display-4">{{ completed_requests }}</p>
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); height: 100%;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                <div style="width: 44px; height: 44px; background: #ecfdf5; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+                </div>
+                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">Выполнено</span>
             </div>
+            <p style="font-size: 2rem; font-weight: 700; margin: 0; color: var(--text);">{{ completed_requests }}</p>
         </div>
     </div>
+
     <div class="col-md-3">
-        <div class="card text-white bg-warning">
-            <div class="card-body">
-                <h5 class="card-title">В работе</h5>
-                <p class="card-text display-4">{{ pending_requests }}</p>
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); height: 100%;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                <div style="width: 44px; height: 44px; background: #fffbeb; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">В работе</span>
             </div>
+            <p style="font-size: 2rem; font-weight: 700; margin: 0; color: var(--text);">{{ in_progress_requests }}</p>
         </div>
     </div>
+
     <div class="col-md-3">
-        <div class="card text-white bg-info">
-            <div class="card-body">
-                <h5 class="card-title">Процент выполнения</h5>
-                <p class="card-text display-4">{{ completion_rate|floatformat:1 }}%</p>
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); height: 100%;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                <div style="width: 44px; height: 44px; background: #f0f9ff; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+                </div>
+                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">Процент выполнения</span>
             </div>
+            <p style="font-size: 2rem; font-weight: 700; margin: 0; color: var(--text);">{{ completion_rate|floatformat:1 }}%</p>
+        </div>
+    </div>
+</div>
+
+<!-- Детальная статистика по статусам -->
+<div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; margin-bottom: 24px;">
+    <h5 style="font-weight: 600; margin-bottom: 20px; font-size: 1rem;">Распределение заявок по статусам</h5>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 120px; text-align: center; padding: 16px; background: #f0f9ff; border-radius: var(--radius-sm);">
+            <div style="font-size: 1.5rem; font-weight: 700; color: #0369a1;">{{ new_requests }}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Новых</div>
+        </div>
+        <div style="flex: 1; min-width: 120px; text-align: center; padding: 16px; background: #fffbeb; border-radius: var(--radius-sm);">
+            <div style="font-size: 1.5rem; font-weight: 700; color: #92400e;">-</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Ожидает</div>
+        </div>
+        <div style="flex: 1; min-width: 120px; text-align: center; padding: 16px; background: #eff6ff; border-radius: var(--radius-sm);">
+            <div style="font-size: 1.5rem; font-weight: 700; color: #1e40af;">{{ in_progress_requests }}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">В процессе</div>
+        </div>
+        <div style="flex: 1; min-width: 120px; text-align: center; padding: 16px; background: #ecfdf5; border-radius: var(--radius-sm);">
+            <div style="font-size: 1.5rem; font-weight: 700; color: #065f46;">{{ ready_requests }}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Готово</div>
+        </div>
+        <div style="flex: 1; min-width: 120px; text-align: center; padding: 16px; background: #f0fdf4; border-radius: var(--radius-sm);">
+            <div style="font-size: 1.5rem; font-weight: 700; color: #166534;">{{ completed_requests }}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Завершено</div>
+        </div>
+        <div style="flex: 1; min-width: 120px; text-align: center; padding: 16px; background: #fef2f2; border-radius: var(--radius-sm);">
+            <div style="font-size: 1.5rem; font-weight: 700; color: #991b1b;">{{ cancelled_requests }}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Отменено</div>
         </div>
     </div>
 </div>
 
 <!-- Статистика по мастерам -->
-<div class="row mb-4">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header bg-dark text-white">
-                <h5 class="mb-0">Статистика по мастерам</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Мастер</th>
-                                <th>Всего заявок</th>
-                                <th>Выполнено</th>
-                                <th>В работе</th>
-                                <th>Процент выполнения</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for stat in masters_stats %}
-                            <tr>
-                                <td>{{ stat.master.user.fio }}</td>
-                                <td>{{ stat.total }}</td>
-                                <td class="text-success">{{ stat.completed }}</td>
-                                <td class="text-warning">{{ stat.pending }}</td>
-                                <td>
-                                    {% if stat.total > 0 %}
-                                        <div class="progress">
-                                            <div class="progress-bar bg-success" style="width: {{ stat.completed|floatformat:0 }}%">
-                                                {{ stat.completed|floatformat:0 }}%
-                                            </div>
-                                        </div>
-                                    {% else %}
-                                        <span class="text-muted">Нет заявок</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="5" class="text-center">Нет мастеров</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+<div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 24px;">
+    <div style="padding: 16px 24px; background: #f8fafc; border-bottom: 1px solid var(--border);">
+        <h5 style="margin: 0; font-weight: 600; font-size: 1rem;">Статистика по мастерам</h5>
+    </div>
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Мастер</th>
+                    <th style="padding: 12px 16px; text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Всего заявок</th>
+                    <th style="padding: 12px 16px; text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Выполнено</th>
+                    <th style="padding: 12px 16px; text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">В работе</th>
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Прогресс</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in masters_stats %}
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 14px 16px; font-weight: 500; font-size: 0.9rem;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 30px; height: 30px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; font-weight: 600;">
+                                {{ stat.master.user.fio|slice:":1" }}
+                            </div>
+                            {{ stat.master.user.fio }}
+                        </div>
+                    </td>
+                    <td style="padding: 14px 16px; text-align: center; font-weight: 600; font-size: 0.9rem;">{{ stat.total }}</td>
+                    <td style="padding: 14px 16px; text-align: center; font-size: 0.9rem; color: #059669; font-weight: 500;">{{ stat.completed }}</td>
+                    <td style="padding: 14px 16px; text-align: center; font-size: 0.9rem; color: #d97706; font-weight: 500;">{{ stat.in_progress }}</td>
+                    <td style="padding: 14px 16px; min-width: 160px;">
+                        {% if stat.total > 0 %}
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="flex: 1; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
+                                <div style="height: 100%; background: var(--success); border-radius: 3px; width: {{ stat.completed }}%;"></div>
+                            </div>
+                            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text);">{{ stat.completed }}%</span>
+                        </div>
+                        {% else %}
+                        <span style="color: var(--text-muted); font-size: 0.8rem;">Нет заявок</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 32px; color: var(--text-muted);">Нет мастеров</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 
 <!-- Общая информация -->
-<div class="row">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">Информация о системе</h5>
+<div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;">
+    <div style="padding: 16px 24px; background: #f0f9ff; border-bottom: 1px solid #bae6fd;">
+        <h5 style="margin: 0; font-weight: 600; font-size: 1rem; color: #075985;">Информация о системе</h5>
+    </div>
+    <div style="padding: 24px;">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span style="color: var(--text-muted); font-weight: 500; width: 200px;">Всего клиентов</span>
+                <span style="font-weight: 600;">{{ clients_count }}</span>
             </div>
-            <div class="card-body">
-                <table class="table table-borderless">
-                    <tr>
-                        <th>Всего клиентов:</th>
-                        <td>{{ clients_count }}</td>
-                    </tr>
-                    <tr>
-                        <th>Всего мастеров:</th>
-                        <td>{{ masters_stats|length }}</td>
-                    </tr>
-                    <tr>
-                        <th>Среднее время выполнения:</th>
-                        <td>-</td>
-                    </tr>
-                </table>
+            <div style="display: flex; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span style="color: var(--text-muted); font-weight: 500; width: 200px;">Всего мастеров</span>
+                <span style="font-weight: 600;">{{ masters_stats|length }}</span>
+            </div>
+            <div style="display: flex; padding: 12px 0;">
+                <span style="color: var(--text-muted); font-weight: 500; width: 200px;">Всего заявок в системе</span>
+                <span style="font-weight: 600;">{{ total_requests }}</span>
             </div>
         </div>
     </div>

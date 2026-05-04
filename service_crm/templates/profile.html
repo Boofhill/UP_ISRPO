@@ -4,12 +4,32 @@
 <div class="row">
     <div class="col-md-6 offset-md-3">
         <h2 class="mb-4">Профиль пользователя</h2>
-        <div class="card">
-            <div class="card-body">
-                <p><strong>ФИО:</strong> {{ user.fio }}</p>
-                <p><strong>Телефон:</strong> {{ user.phone }}</p>
-                <p><strong>Логин:</strong> {{ user.login }}</p>
-                <p><strong>Тип:</strong> {{ user.get_type_display }}</p>
+        <div class="card" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);">
+            <div class="card-body" style="padding: 32px;">
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                    <div style="width: 56px; height: 56px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem; font-weight: 600;">
+                        {{ user.fio|slice:":1" }}
+                    </div>
+                    <div>
+                        <h5 style="margin: 0; font-weight: 600; color: var(--text);">{{ user.fio }}</h5>
+                        <span style="font-size: 0.85rem; color: var(--text-muted); background: #f1f5f9; padding: 3px 10px; border-radius: 20px;">{{ user.get_type_display }}</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                        <span style="color: var(--text-muted); font-weight: 500;">Телефон</span>
+                        <span style="color: var(--text); font-weight: 500;">{{ user.phone }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                        <span style="color: var(--text-muted); font-weight: 500;">Логин</span>
+                        <span style="color: var(--text); font-weight: 500;">{{ user.login }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 12px 0;">
+                        <span style="color: var(--text-muted); font-weight: 500;">Тип</span>
+                        <span style="color: var(--text); font-weight: 500;">{{ user.get_type_display }}</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

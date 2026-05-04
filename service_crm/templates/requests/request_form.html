@@ -3,50 +3,70 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <div class="card">
-            <div class="card-header {% if action == 'create' %}bg-success{% else %}bg-warning{% endif %} text-white">
-                <h4 class="mb-0">
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;">
+            <!-- Заголовок -->
+            <div style="padding: 20px 24px; {% if action == 'create' %}background: #ecfdf5; border-bottom: 1px solid #a7f3d0;{% else %}background: #fffbeb; border-bottom: 1px solid #fde68a;{% endif %} display: flex; align-items: center; gap: 12px;">
+                <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; {% if action == 'create' %}background: #d1fae5;{% else %}background: #fef3c7;{% endif %}">
                     {% if action == 'create' %}
-                        ➕ Создание новой заявки
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     {% elif action == 'update' %}
-                        ✏ Редактирование заявки #{{ ticket.request_id }}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                     {% elif action == 'update_master' %}
-                        ✓ Изменение статуса заявки #{{ ticket.request_id }}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><polyline points="12 6 12 12 16 14"/></svg>
+                    {% endif %}
+                </div>
+                <h4 style="margin: 0; font-weight: 600; font-size: 1.1rem; {% if action == 'create' %}color: #065f46;{% else %}color: #92400e;{% endif %}">
+                    {% if action == 'create' %}
+                        Создание новой заявки
+                    {% elif action == 'update' %}
+                        Редактирование заявки #{{ ticket.request_id }}
+                    {% elif action == 'update_master' %}
+                        Изменение статуса заявки #{{ ticket.request_id }}
                     {% endif %}
                 </h4>
             </div>
-            <div class="card-body">
+
+            <!-- Форма -->
+            <div style="padding: 28px 24px;">
                 <form method="post">
                     {% csrf_token %}
 
                     {% if action == 'create' or action == 'update' %}
-                        <!-- Полная форма для создания или редактирования админом -->
-                        <div class="mb-3">
-                            <label for="home_tech_type" class="form-label">Тип техники</label>
-                            <input type="text" class="form-control" id="home_tech_type" name="home_tech_type"
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <!-- Тип техники -->
+                        <div>
+                            <label for="home_tech_type" style="display: block; margin-bottom: 6px; font-weight: 500; color: var(--text); font-size: 0.9rem;">Тип техники</label>
+                            <input type="text" id="home_tech_type" name="home_tech_type"
                                    value="{% if ticket %}{{ ticket.home_tech_type }}{% endif %}"
-                                   placeholder="Например: Холодильник" required>
+                                   placeholder="Например: Холодильник" required
+                                   style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; outline: none; transition: border-color 0.2s; box-sizing: border-box;">
                         </div>
 
-                        <div class="mb-3">
-                            <label for="home_tech_model" class="form-label">Модель техники</label>
-                            <input type="text" class="form-control" id="home_tech_model" name="home_tech_model"
+                        <!-- Модель -->
+                        <div>
+                            <label for="home_tech_model" style="display: block; margin-bottom: 6px; font-weight: 500; color: var(--text); font-size: 0.9rem;">Модель техники</label>
+                            <input type="text" id="home_tech_model" name="home_tech_model"
                                    value="{% if ticket %}{{ ticket.home_tech_model }}{% endif %}"
-                                   placeholder="Например: Samsung RB-30" required>
+                                   placeholder="Например: Samsung RB-30" required
+                                   style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; outline: none; transition: border-color 0.2s; box-sizing: border-box;">
                         </div>
 
-                        <div class="mb-3">
-                            <label for="problem_description" class="form-label">Описание проблемы</label>
-                            <textarea class="form-control" id="problem_description" name="problem_description"
-                                      rows="5" required>{% if ticket %}{{ ticket.problem_description }}{% endif %}</textarea>
+                        <!-- Описание -->
+                        <div>
+                            <label for="problem_description" style="display: block; margin-bottom: 6px; font-weight: 500; color: var(--text); font-size: 0.9rem;">Описание проблемы</label>
+                            <textarea id="problem_description" name="problem_description" rows="5" required
+                                      placeholder="Опишите неисправность..."
+                                      style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; resize: vertical; outline: none; transition: border-color 0.2s; box-sizing: border-box;">{% if ticket %}{{ ticket.problem_description }}{% endif %}</textarea>
                         </div>
+                    </div>
                     {% endif %}
 
-                    <!-- Статус заявки -->
+                    <!-- Статус заявки (только для редактирования) -->
                     {% if action != 'create' %}
-                    <div class="mb-3">
-                        <label for="request_status" class="form-label">Статус заявки</label>
-                        <select class="form-control" id="request_status" name="request_status">
+                    <div style="margin-top: 20px;">
+                        <label for="request_status" style="display: block; margin-bottom: 6px; font-weight: 500; color: var(--text); font-size: 0.9rem;">Статус заявки</label>
+                        <select id="request_status" name="request_status"
+                                style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; background: white; outline: none; cursor: pointer; box-sizing: border-box;">
                             {% for status_value, status_name in status_choices %}
                                 <option value="{{ status_value }}" {% if ticket and ticket.request_status == status_value %}selected{% endif %}>
                                     {{ status_name }}
@@ -56,17 +76,21 @@
                     </div>
                     {% endif %}
 
-                    <div class="mb-3">
-                        <label for="repair_parts" class="form-label">Использованные запчасти</label>
-                        <textarea class="form-control" id="repair_parts" name="repair_parts"
-                                  rows="3">{% if ticket %}{{ ticket.repair_parts }}{% endif %}</textarea>
+                    <!-- Запчасти -->
+                    <div style="margin-top: 20px;">
+                        <label for="repair_parts" style="display: block; margin-bottom: 6px; font-weight: 500; color: var(--text); font-size: 0.9rem;">Использованные запчасти</label>
+                        <textarea id="repair_parts" name="repair_parts" rows="3"
+                                  placeholder="Перечислите использованные запчасти и материалы..."
+                                  style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; resize: vertical; outline: none; transition: border-color 0.2s; box-sizing: border-box;">{% if ticket %}{{ ticket.repair_parts }}{% endif %}</textarea>
                     </div>
 
+                    <!-- Назначение мастера (только для админа при редактировании) -->
                     {% if action == 'update' and masters %}
-                    <div class="mb-3">
-                        <label for="master" class="form-label">Назначить мастера</label>
-                        <select class="form-control" id="master" name="master">
-                            <option value="">-- Не назначен --</option>
+                    <div style="margin-top: 20px;">
+                        <label for="master" style="display: block; margin-bottom: 6px; font-weight: 500; color: var(--text); font-size: 0.9rem;">Назначить мастера</label>
+                        <select id="master" name="master"
+                                style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; background: white; outline: none; cursor: pointer; box-sizing: border-box;">
+                            <option value="">Не назначен</option>
                             {% for master in masters %}
                             <option value="{{ master.master_id }}" {% if ticket.master and ticket.master.master_id == master.master_id %}selected{% endif %}>
                                 {{ master.user.fio }}
@@ -76,9 +100,16 @@
                     </div>
                     {% endif %}
 
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
-                    <a href="{% if ticket %}{% url 'request_detail' ticket.request_id %}{% else %}{% url 'dashboard' %}{% endif %}"
-                       class="btn btn-secondary">Отмена</a>
+                    <!-- Кнопки -->
+                    <div style="display: flex; gap: 12px; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border);">
+                        <button type="submit" style="padding: 12px 28px; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.2s;">
+                            Сохранить
+                        </button>
+                        <a href="{% if ticket %}{% url 'request_detail' ticket.request_id %}{% else %}{% url 'dashboard' %}{% endif %}"
+                           style="padding: 12px 28px; background: #f1f5f9; color: var(--text); border-radius: var(--radius-sm); text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; transition: background 0.2s;">
+                            Отмена
+                        </a>
+                    </div>
                 </form>
             </div>
         </div>

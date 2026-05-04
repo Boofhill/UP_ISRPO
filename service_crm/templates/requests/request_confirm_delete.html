@@ -3,26 +3,48 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="card border-danger">
-            <div class="card-header bg-danger text-white">
-                <h4 class="mb-0">⚠ Подтверждение удаления</h4>
+        <div style="background: var(--surface); border: 1px solid #fecaca; border-radius: var(--radius); box-shadow: var(--shadow-md); overflow: hidden;">
+            <div style="background: #fef2f2; padding: 20px 24px; border-bottom: 1px solid #fecaca; display: flex; align-items: center; gap: 12px;">
+                <div style="width: 44px; height: 44px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                </div>
+                <h4 style="margin: 0; font-weight: 700; color: #991b1b; font-size: 1.15rem;">Подтверждение удаления</h4>
             </div>
-            <div class="card-body">
-                <p class="lead">Вы уверены, что хотите удалить заявку?</p>
 
-                <div class="alert alert-warning">
-                    <strong>Заявка #{{ request.request_id }}</strong><br>
-                    {{ request.home_tech_type }} {{ request.home_tech_model }}<br>
-                    <small class="text-muted">{{ request.problem_description|truncatechars:100 }}</small>
+            <div style="padding: 28px 24px;">
+                <p style="font-size: 1rem; color: var(--text); margin-bottom: 20px; font-weight: 500;">
+                    Вы уверены, что хотите удалить заявку?
+                </p>
+
+                <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: var(--radius-sm); padding: 16px 20px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+                        <span style="background: #fef3c7; color: #92400e; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">Заявка</span>
+                        <strong style="color: var(--text); font-size: 0.95rem;">#{{ ticket.request_id }}</strong>
+                    </div>
+                    <p style="margin: 4px 0; font-size: 0.9rem; color: var(--text);">{{ ticket.home_tech_type }} {{ ticket.home_tech_model }}</p>
+                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">{{ ticket.problem_description|truncatechars:120 }}</p>
                 </div>
 
-                <p class="text-danger"><strong>Внимание!</strong> Это действие нельзя отменить. Все комментарии к заявке также будут удалены.</p>
+                <p style="color: #dc2626; font-size: 0.85rem; font-weight: 500; margin-bottom: 24px; display: flex; align-items: start; gap: 8px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-top: 2px; flex-shrink: 0;">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    Это действие нельзя отменить. Все комментарии к заявке также будут удалены.
+                </p>
 
                 <form method="post">
                     {% csrf_token %}
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-danger">Да, удалить заявку</button>
-                        <a href="{% url 'request_detail' request.request_id %}" class="btn btn-secondary">Нет, вернуться</a>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <button type="submit" style="width: 100%; padding: 12px; background: #dc2626; color: white; border: none; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: background 0.2s;">
+                            Да, удалить заявку
+                        </button>
+                        <a href="{% url 'request_detail' ticket.request_id %}" style="width: 100%; padding: 12px; background: #f1f5f9; color: var(--text); text-align: center; border-radius: var(--radius-sm); text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: background 0.2s;">
+                            Нет, вернуться
+                        </a>
                     </div>
                 </form>
             </div>

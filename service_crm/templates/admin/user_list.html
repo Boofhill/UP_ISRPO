@@ -1,54 +1,69 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>👥 Управление пользователями</h1>
-    <a href="{% url 'user_create' %}" class="btn btn-primary">+ Создать пользователя</a>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;">
+    <h1 style="font-size: 1.75rem; font-weight: 700; margin: 0;">Управление пользователями</h1>
+    <a href="{% url 'user_create' %}" style="display: inline-flex; align-items: center; gap: 8px; background: var(--primary); color: white; padding: 10px 20px; border-radius: var(--radius-sm); text-decoration: none; font-weight: 500; font-size: 0.9rem;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Создать пользователя
+    </a>
 </div>
 
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>ФИО</th>
-                        <th>Телефон</th>
-                        <th>Логин</th>
-                        <th>Тип</th>
-                        <th>Действия</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                    <tr>
-                        <td>{{ user.user_id }}</td>
-                        <td>{{ user.fio }}</td>
-                        <td>{{ user.phone }}</td>
-                        <td>{{ user.login }}</td>
-                        <td>
-                            <span class="badge {% if user.type == 'admin' %}bg-danger{% elif user.type == 'master' %}bg-success{% else %}bg-primary{% endif %}">
-                                {{ user.get_type_display }}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="btn-group btn-group-sm">
-                                <a href="{% url 'user_update' user.user_id %}" class="btn btn-warning" title="Редактировать">✏</a>
-                                <a href="{% url 'user_delete' user.user_id %}" class="btn btn-danger" title="Удалить">🗑</a>
+<div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;">
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #1e293b;">
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">ID</th>
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">ФИО</th>
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">Телефон</th>
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">Логин</th>
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">Тип</th>
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr style="border-bottom: 1px solid var(--border); transition: background 0.15s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 14px 16px; font-weight: 600; color: var(--text-muted); font-size: 0.85rem;">{{ user.user_id }}</td>
+                    <td style="padding: 14px 16px; font-weight: 500; font-size: 0.9rem;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: 600; {% if user.type == 'admin' %}background: #dc2626;{% elif user.type == 'master' %}background: #059669;{% else %}background: #2563eb;{% endif %}">
+                                {{ user.fio|slice:":1" }}
                             </div>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" class="text-center py-4">
-                            <p class="mb-0">Нет пользователей</p>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                            {{ user.fio }}
+                        </div>
+                    </td>
+                    <td style="padding: 14px 16px; font-size: 0.85rem; color: var(--text-muted);">{{ user.phone }}</td>
+                    <td style="padding: 14px 16px; font-size: 0.85rem;">{{ user.login }}</td>
+                    <td style="padding: 14px 16px;">
+                        <span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 500; {% if user.type == 'admin' %}background: #fef2f2; color: #991b1b;{% elif user.type == 'master' %}background: #ecfdf5; color: #065f46;{% else %}background: #eff6ff; color: #1e40af;{% endif %}">
+                            {{ user.get_type_display }}
+                        </span>
+                    </td>
+                    <td style="padding: 14px 16px;">
+                        <div style="display: flex; gap: 6px;">
+                            <a href="{% url 'user_update' user.user_id %}" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #fef3c7; color: #92400e; border-radius: var(--radius-sm); text-decoration: none;" title="Редактировать">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </a>
+                            <a href="{% url 'user_delete' user.user_id %}" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #fee2e2; color: #991b1b; border-radius: var(--radius-sm); text-decoration: none;" title="Удалить">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 48px 16px;">
+                        <div style="margin-bottom: 12px;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                        </div>
+                        <p style="color: var(--text-muted);">Нет пользователей</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

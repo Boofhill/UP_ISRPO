@@ -3,10 +3,12 @@
 {% block content %}
 <div class="row">
     <div class="col-md-8">
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Заявка #{{ ticket.request_id }}</h4>
-                <span class="badge {% if ticket.request_status == 'completed' or ticket.request_status == 'ready' %}bg-success{% elif ticket.request_status == 'cancelled' %}bg-danger{% elif ticket.request_status == 'in_progress' %}bg-info{% else %}bg-warning{% endif %} fs-6">
+        <!-- Основная информация о заявке -->
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 24px;">
+            <!-- Заголовок -->
+            <div style="background: var(--primary); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between;">
+                <h4 style="margin: 0; color: white; font-weight: 600; font-size: 1.15rem;">Заявка #{{ ticket.request_id }}</h4>
+                <span style="display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; {% if ticket.request_status == 'completed' or ticket.request_status == 'ready' %}background: #ecfdf5; color: #065f46;{% elif ticket.request_status == 'cancelled' %}background: #fef2f2; color: #991b1b;{% elif ticket.request_status == 'in_progress' %}background: #eff6ff; color: #1e40af;{% elif ticket.request_status == 'new' %}background: #f0f9ff; color: #0369a1;{% else %}background: #fffbeb; color: #92400e;{% endif %}">
                     {% if ticket.request_status == 'new' %}Новая
                     {% elif ticket.request_status == 'pending' %}Ожидает
                     {% elif ticket.request_status == 'in_progress' %}В процессе ремонта
@@ -16,97 +18,128 @@
                     {% endif %}
                 </span>
             </div>
-            <div class="card-body">
-                <table class="table table-borderless">
-                    <tr>
-                        <th style="width: 200px;">Тип техники:</th>
-                        <td>{{ ticket.home_tech_type }}</td>
-                    </tr>
-                    <tr>
-                        <th>Модель:</th>
-                        <td>{{ ticket.home_tech_model }}</td>
-                    </tr>
-                    <tr>
-                        <th>Описание проблемы:</th>
-                        <td>{{ ticket.problem_description|linebreaks }}</td>
-                    </tr>
-                    <tr>
-                        <th>Дата создания:</th>
-                        <td>{{ ticket.start_date|date:"d.m.Y H:i" }}</td>
-                    </tr>
+
+            <!-- Тело -->
+            <div style="padding: 24px;">
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <!-- Тип техники -->
+                    <div style="display: flex; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                        <span style="width: 200px; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; flex-shrink: 0;">Тип техники</span>
+                        <span style="color: var(--text); font-weight: 500;">{{ ticket.home_tech_type }}</span>
+                    </div>
+
+                    <!-- Модель -->
+                    <div style="display: flex; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                        <span style="width: 200px; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; flex-shrink: 0;">Модель</span>
+                        <span style="color: var(--text); font-weight: 500;">{{ ticket.home_tech_model }}</span>
+                    </div>
+
+                    <!-- Описание -->
+                    <div style="display: flex; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                        <span style="width: 200px; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; flex-shrink: 0;">Описание проблемы</span>
+                        <span style="color: var(--text); line-height: 1.6;">{{ ticket.problem_description|linebreaks }}</span>
+                    </div>
+
+                    <!-- Дата создания -->
+                    <div style="display: flex; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                        <span style="width: 200px; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; flex-shrink: 0;">Дата создания</span>
+                        <span style="color: var(--text); font-weight: 500;">{{ ticket.start_date|date:"d.m.Y H:i" }}</span>
+                    </div>
+
+                    <!-- Дата завершения -->
                     {% if ticket.completion_date %}
-                    <tr>
-                        <th>Дата завершения:</th>
-                        <td>{{ ticket.completion_date|date:"d.m.Y H:i" }}</td>
-                    </tr>
+                    <div style="display: flex; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                        <span style="width: 200px; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; flex-shrink: 0;">Дата завершения</span>
+                        <span style="color: var(--text); font-weight: 500;">{{ ticket.completion_date|date:"d.m.Y H:i" }}</span>
+                    </div>
                     {% endif %}
-                    <tr>
-                        <th>Клиент:</th>
-                        <td>{{ ticket.client.user.fio }} ({{ ticket.client.user.phone }})</td>
-                    </tr>
-                    <tr>
-                        <th>Мастер:</th>
-                        <td>
+
+                    <!-- Клиент -->
+                    <div style="display: flex; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                        <span style="width: 200px; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; flex-shrink: 0;">Клиент</span>
+                        <span style="color: var(--text); font-weight: 500;">{{ ticket.client.user.fio }} ({{ ticket.client.user.phone }})</span>
+                    </div>
+
+                    <!-- Мастер -->
+                    <div style="display: flex; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                        <span style="width: 200px; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; flex-shrink: 0;">Мастер</span>
+                        <span>
                             {% if ticket.master %}
-                                {{ ticket.master.user.fio }}
+                                <span style="color: var(--text); font-weight: 500;">{{ ticket.master.user.fio }}</span>
                             {% else %}
-                                <span class="text-muted">Не назначен</span>
+                                <span style="display: inline-block; background: #f1f5f9; color: var(--text-muted); padding: 3px 12px; border-radius: 20px; font-size: 0.8rem;">Не назначен</span>
                             {% endif %}
-                        </td>
-                    </tr>
+                        </span>
+                    </div>
+
+                    <!-- Запчасти -->
                     {% if ticket.repair_parts %}
-                    <tr>
-                        <th>Использованные запчасти:</th>
-                        <td>{{ ticket.repair_parts|linebreaks }}</td>
-                    </tr>
-                    {% endif %}
-                </table>
-            </div>
-            <div class="card-footer">
-                <div class="btn-group">
-                    <a href="{% url 'request_list' %}" class="btn btn-secondary">Назад</a>
-
-                    {% if request.session.user_type == 'admin' %}
-                        <a href="{% url 'request_update' ticket.request_id %}" class="btn btn-warning">Редактировать</a>
-                        <a href="{% url 'request_delete' ticket.request_id %}" class="btn btn-danger">Удалить</a>
-                    {% endif %}
-
-                    {% if is_assigned and ticket.request_status != 'completed' and ticket.request_status != 'cancelled' %}
-                        <a href="{% url 'request_update' ticket.request_id %}" class="btn btn-success">Изменить статус</a>
+                    <div style="display: flex; padding: 12px 0;">
+                        <span style="width: 200px; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; flex-shrink: 0;">Запчасти</span>
+                        <span style="color: var(--text); line-height: 1.6;">{{ ticket.repair_parts|linebreaks }}</span>
+                    </div>
                     {% endif %}
                 </div>
+            </div>
+
+            <!-- Кнопки действий -->
+            <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid var(--border); display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="{% url 'request_list' %}" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: #f1f5f9; color: var(--text); border-radius: var(--radius-sm); text-decoration: none; font-size: 0.85rem; font-weight: 500;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    Назад
+                </a>
+
+                {% if request.session.user_type == 'admin' %}
+                    <a href="{% url 'request_update' ticket.request_id %}" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: #fef3c7; color: #92400e; border-radius: var(--radius-sm); text-decoration: none; font-size: 0.85rem; font-weight: 500;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        Редактировать
+                    </a>
+                    <a href="{% url 'request_delete' ticket.request_id %}" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: #fee2e2; color: #991b1b; border-radius: var(--radius-sm); text-decoration: none; font-size: 0.85rem; font-weight: 500;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        Удалить
+                    </a>
+                {% endif %}
+
+                {% if is_assigned and ticket.request_status != 'completed' and ticket.request_status != 'cancelled' %}
+                    <a href="{% url 'request_update' ticket.request_id %}" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: #d1fae5; color: #065f46; border-radius: var(--radius-sm); text-decoration: none; font-size: 0.85rem; font-weight: 500;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Изменить статус
+                    </a>
+                {% endif %}
             </div>
         </div>
 
         <!-- Комментарии -->
-        <div class="card">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">Комментарии</h5>
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;">
+            <div style="background: var(--info); padding: 16px 24px;">
+                <h5 style="margin: 0; color: white; font-weight: 600; font-size: 1rem;">Комментарии</h5>
             </div>
-            <div class="card-body">
+            <div style="padding: 24px;">
                 {% if request.session.user_type == 'master' and is_assigned %}
-                <form method="post" action="{% url 'add_comment' ticket.request_id %}" class="mb-4">
+                <form method="post" action="{% url 'add_comment' ticket.request_id %}" style="margin-bottom: 24px;">
                     {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Добавить комментарий:</label>
-                        <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+                    <div style="margin-bottom: 12px;">
+                        <label for="message" style="display: block; margin-bottom: 6px; font-weight: 500; color: var(--text); font-size: 0.9rem;">Добавить комментарий:</label>
+                        <textarea style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; resize: vertical; font-family: inherit; outline: none; transition: border-color 0.2s;" id="message" name="message" rows="3" required placeholder="Опишите ход работы..."></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Отправить</button>
+                    <button type="submit" style="padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 500; cursor: pointer;">Отправить</button>
                 </form>
                 {% endif %}
 
-                <div class="comments-list">
+                <div style="display: flex; flex-direction: column; gap: 12px;">
                     {% for comment in comments %}
-                    <div class="card mb-2 {% if forloop.first %}border-primary{% endif %}">
-                        <div class="card-body">
-                            <h6 class="card-subtitle mb-2 text-muted">
-                                {{ comment.master.user.fio }} - {{ comment.created_at|date:"d.m.Y H:i" }}
-                            </h6>
-                            <p class="card-text">{{ comment.message|linebreaks }}</p>
+                    <div style="padding: 16px; background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm); {% if forloop.first %}border-left: 3px solid var(--primary);{% endif %}">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: 600;">
+                                {{ comment.master.user.fio|slice:":1" }}
+                            </div>
+                            <span style="font-weight: 600; color: var(--text); font-size: 0.85rem;">{{ comment.master.user.fio }}</span>
+                            <span style="color: var(--text-muted); font-size: 0.75rem; margin-left: auto;">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
                         </div>
+                        <p style="margin: 0; color: var(--text); font-size: 0.9rem; line-height: 1.6;">{{ comment.message|linebreaks }}</p>
                     </div>
                     {% empty %}
-                    <p class="text-muted text-center">Нет комментариев</p>
+                    <p style="text-align: center; color: var(--text-muted); padding: 20px 0;">Нет комментариев</p>
                     {% endfor %}
                 </div>
             </div>
@@ -116,17 +149,17 @@
     <!-- Боковая панель для админа -->
     {% if request.session.user_type == 'admin' %}
     <div class="col-md-4">
-        <div class="card">
-            <div class="card-header bg-warning">
-                <h5 class="mb-0">Управление заявкой</h5>
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; position: sticky; top: 80px;">
+            <div style="background: #fef3c7; padding: 16px 24px; border-bottom: 1px solid #fde68a;">
+                <h5 style="margin: 0; font-weight: 600; font-size: 1rem; color: #92400e;">Управление заявкой</h5>
             </div>
-            <div class="card-body">
+            <div style="padding: 24px;">
                 <form method="post" action="{% url 'assign_master' ticket.request_id %}">
                     {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="master" class="form-label">Назначить мастера:</label>
-                        <select class="form-control" id="master" name="master">
-                            <option value="">-- Не назначен --</option>
+                    <div style="margin-bottom: 16px;">
+                        <label for="master" style="display: block; margin-bottom: 8px; font-weight: 500; color: var(--text); font-size: 0.9rem;">Назначить мастера:</label>
+                        <select style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; background: white; outline: none; cursor: pointer;" id="master" name="master">
+                            <option value="">Не назначен</option>
                             {% for master in masters %}
                             <option value="{{ master.master_id }}" {% if ticket.master and ticket.master.master_id == master.master_id %}selected{% endif %}>
                                 {{ master.user.fio }}
@@ -134,7 +167,7 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-warning w-100">Сохранить</button>
+                    <button type="submit" style="width: 100%; padding: 12px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">Сохранить</button>
                 </form>
             </div>
         </div>

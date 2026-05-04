@@ -1,36 +1,54 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Список заявок</h1>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;">
+    <h1 style="font-size: 1.75rem; font-weight: 700; margin: 0;">Список заявок</h1>
     <div>
         {% if request.session.user_type == 'client' %}
-            <a href="{% url 'request_create' %}" class="btn btn-primary">+ Новая заявка</a>
+            <a href="{% url 'request_create' %}" style="display: inline-flex; align-items: center; gap: 8px; background: var(--primary); color: white; padding: 10px 20px; border-radius: var(--radius-sm); text-decoration: none; font-weight: 500; font-size: 0.9rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Новая заявка
+            </a>
         {% endif %}
     </div>
 </div>
 
 <!-- Фильтры -->
-<div class="card mb-4">
-    <div class="card-body">
-        <form method="get" class="row g-3">
-            <div class="col-md-4">
-                <label for="search" class="form-label">Поиск</label>
-                <input type="text" class="form-control" id="search" name="search" value="{{ search_query|default:'' }}" placeholder="№ заявки, техника, описание...">
+<div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 24px; padding: 24px;">
+    <form method="get">
+        <div style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
+            <!-- Поиск -->
+            <div style="flex: 1; min-width: 200px;">
+                <label for="search" style="display: block; margin-bottom: 6px; font-weight: 500; color: var(--text); font-size: 0.85rem;">Поиск</label>
+                <div style="position: relative;">
+                    <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%);" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="search" name="search" value="{{ search_query|default:'' }}" placeholder="Номер заявки, техника, описание..."
+                           style="width: 100%; padding: 10px 12px 10px 38px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.85rem; font-family: inherit; outline: none; box-sizing: border-box;">
+                </div>
             </div>
-            <div class="col-md-3">
-                <label for="status" class="form-label">Статус</label>
-                <select class="form-control" id="status" name="status">
-                    <option value="">Все</option>
-                    <option value="pending" {% if current_status == 'pending' %}selected{% endif %}>В работе</option>
-                    <option value="completed" {% if current_status == 'completed' %}selected{% endif %}>Выполнено</option>
+
+            <!-- Статус -->
+            <div style="width: 180px; flex-shrink: 0;">
+                <label for="status" style="display: block; margin-bottom: 6px; font-weight: 500; color: var(--text); font-size: 0.85rem;">Статус</label>
+                <select id="status" name="status"
+                        style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.85rem; font-family: inherit; background: white; outline: none; cursor: pointer; box-sizing: border-box;">
+                    <option value="all" {% if not current_status or current_status == 'all' %}selected{% endif %}>Все статусы</option>
+                    <option value="new" {% if current_status == 'new' %}selected{% endif %}>Новая</option>
+                    <option value="pending" {% if current_status == 'pending' %}selected{% endif %}>Ожидает</option>
+                    <option value="in_progress" {% if current_status == 'in_progress' %}selected{% endif %}>В процессе ремонта</option>
+                    <option value="ready" {% if current_status == 'ready' %}selected{% endif %}>Готово</option>
+                    <option value="completed" {% if current_status == 'completed' %}selected{% endif %}>Завершена</option>
+                    <option value="cancelled" {% if current_status == 'cancelled' %}selected{% endif %}>Отменена</option>
                 </select>
             </div>
+
+            <!-- Мастер (только для админа) -->
             {% if request.session.user_type == 'admin' and masters %}
-            <div class="col-md-3">
-                <label for="master" class="form-label">Мастер</label>
-                <select class="form-control" id="master" name="master">
-                    <option value="">Все</option>
+            <div style="width: 200px; flex-shrink: 0;">
+                <label for="master" style="display: block; margin-bottom: 6px; font-weight: 500; color: var(--text); font-size: 0.85rem;">Мастер</label>
+                <select id="master" name="master"
+                        style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.85rem; font-family: inherit; background: white; outline: none; cursor: pointer; box-sizing: border-box;">
+                    <option value="">Все мастера</option>
                     {% for master in masters %}
                     <option value="{{ master.master_id }}" {% if request.GET.master == master.master_id|stringformat:"i" %}selected{% endif %}>
                         {{ master.user.fio }}
@@ -39,81 +57,103 @@
                 </select>
             </div>
             {% endif %}
-            <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100">Применить</button>
+
+            <!-- Кнопка -->
+            <div style="flex-shrink: 0; margin-top: auto;">
+                <button type="submit" style="padding: 10px 24px; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 500; cursor: pointer; height: 42px;">
+                    Применить
+                </button>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
 
 <!-- Таблица заявок -->
-<div class="table-responsive">
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>№</th>
-                <th>Тип техники</th>
-                <th>Модель</th>
-                <th>Описание</th>
-                <th>Статус</th>
-                <th>Дата создания</th>
-                <th>Клиент</th>
-                <th>Мастер</th>
-                <th>Действия</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for req in requests %}
-            <tr>
-                <td>#{{ req.request_id }}</td>
-                <td>{{ req.home_tech_type }}</td>
-                <td>{{ req.home_tech_model }}</td>
-                <td>{{ req.problem_description|truncatechars:50 }}</td>
-                <td>
-                    {% if req.request_status %}
-                        <span class="badge bg-success">Выполнено</span>
-                        {% if req.completion_date %}
-                            <br><small>{{ req.completion_date|date:"d.m.Y" }}</small>
+<div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;">
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #1e293b;">
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">№</th>
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">Тип техники</th>
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">Модель</th>
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">Описание</th>
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">Статус</th>
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">Дата</th>
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">Клиент</th>
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">Мастер</th>
+                    <th style="padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px;">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in requests %}
+                <tr style="border-bottom: 1px solid var(--border); transition: background 0.15s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 14px 16px; font-weight: 600; color: var(--text); font-size: 0.85rem;">#{{ req.request_id }}</td>
+                    <td style="padding: 14px 16px; font-size: 0.85rem;">{{ req.home_tech_type }}</td>
+                    <td style="padding: 14px 16px; font-size: 0.85rem;">{{ req.home_tech_model }}</td>
+                    <td style="padding: 14px 16px; font-size: 0.85rem; color: var(--text-muted); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ req.problem_description|truncatechars:50 }}</td>
+                    <td style="padding: 14px 16px;">
+                        {% if req.request_status == 'new' %}
+                            <span style="display: inline-block; background: #f0f9ff; color: #0369a1; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 500;">Новая</span>
+                        {% elif req.request_status == 'pending' %}
+                            <span style="display: inline-block; background: #fffbeb; color: #92400e; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 500;">Ожидает</span>
+                        {% elif req.request_status == 'in_progress' %}
+                            <span style="display: inline-block; background: #eff6ff; color: #1e40af; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 500;">В процессе</span>
+                        {% elif req.request_status == 'ready' %}
+                            <span style="display: inline-block; background: #ecfdf5; color: #065f46; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 500;">Готово</span>
+                        {% elif req.request_status == 'completed' %}
+                            <span style="display: inline-block; background: #f0fdf4; color: #166534; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 500;">Завершена</span>
+                        {% elif req.request_status == 'cancelled' %}
+                            <span style="display: inline-block; background: #fef2f2; color: #991b1b; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 500;">Отменена</span>
                         {% endif %}
-                    {% else %}
-                        <span class="badge bg-warning">В работе</span>
-                    {% endif %}
-                </td>
-                <td>{{ req.start_date|date:"d.m.Y H:i" }}</td>
-                <td>{{ req.client.user.fio }}</td>
-                <td>
-                    {% if req.master %}
-                        {{ req.master.user.fio }}
-                    {% else %}
-                        <span class="badge bg-secondary">Не назначен</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <div class="btn-group btn-group-sm">
-                        <a href="{% url 'request_detail' req.request_id %}" class="btn btn-info" title="Просмотр">👁</a>
-                        
-                        {% if request.session.user_type == 'admin' %}
-                            <a href="{% url 'request_update' req.request_id %}" class="btn btn-warning" title="Редактировать">✏</a>
-                            <a href="{% url 'request_delete' req.request_id %}" class="btn btn-danger" title="Удалить">🗑</a>
+                    </td>
+                    <td style="padding: 14px 16px; font-size: 0.85rem; color: var(--text-muted);">{{ req.start_date|date:"d.m.Y" }}</td>
+                    <td style="padding: 14px 16px; font-size: 0.85rem;">{{ req.client.user.fio }}</td>
+                    <td style="padding: 14px 16px; font-size: 0.85rem;">
+                        {% if req.master %}
+                            {{ req.master.user.fio }}
+                        {% else %}
+                            <span style="display: inline-block; background: #f1f5f9; color: var(--text-muted); padding: 3px 10px; border-radius: 20px; font-size: 0.75rem;">Не назначен</span>
                         {% endif %}
-                        
-                        {% if request.session.user_type == 'master' and req.master and req.master.user.user_id == request.session.user_id and not req.request_status %}
-                            <a href="{% url 'request_update' req.request_id %}" class="btn btn-success" title="Выполнить">✓</a>
+                    </td>
+                    <td style="padding: 14px 16px;">
+                        <div style="display: flex; gap: 6px;">
+                            <a href="{% url 'request_detail' req.request_id %}" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #eff6ff; color: #1d4ed8; border-radius: var(--radius-sm); text-decoration: none;" title="Просмотр">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </a>
+
+                            {% if request.session.user_type == 'admin' %}
+                                <a href="{% url 'request_update' req.request_id %}" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #fef3c7; color: #92400e; border-radius: var(--radius-sm); text-decoration: none;" title="Редактировать">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                </a>
+                                <a href="{% url 'request_delete' req.request_id %}" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #fee2e2; color: #991b1b; border-radius: var(--radius-sm); text-decoration: none;" title="Удалить">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                </a>
+                            {% endif %}
+
+                            {% if request.session.user_type == 'master' and req.master and req.master.user.user_id == request.session.user_id and req.request_status != 'completed' %}
+                                <a href="{% url 'request_update' req.request_id %}" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #d1fae5; color: #065f46; border-radius: var(--radius-sm); text-decoration: none;" title="Обновить статус">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" style="text-align: center; padding: 48px 16px;">
+                        <div style="margin-bottom: 12px;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+                        </div>
+                        <p style="color: var(--text-muted); margin-bottom: 12px;">Заявок не найдено</p>
+                        {% if request.session.user_type == 'client' %}
+                            <a href="{% url 'request_create' %}" style="display: inline-block; padding: 10px 20px; background: var(--primary); color: white; border-radius: var(--radius-sm); text-decoration: none; font-weight: 500; font-size: 0.85rem;">Создать первую заявку</a>
                         {% endif %}
-                    </div>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="9" class="text-center py-4">
-                    <p class="mb-0">Заявок не найдено</p>
-                    {% if request.session.user_type == 'client' %}
-                        <a href="{% url 'request_create' %}" class="btn btn-primary mt-2">Создать первую заявку</a>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
